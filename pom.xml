@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Parent POM: the single place where versions are decided.
+
+  Every microservice below is its own Spring Boot application with its own
+  port, but they share one build so `mvn package` at the root builds them all.
+  Child modules inherit these versions and never repeat them.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.financetoolkit</groupId>
+  <artifactId>finance-toolkit</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Finance Toolkit :: Parent</name>
+  <description>Small Spring Boot microservices project for learning core finance: loans, investing and planning.</description>
+
+  <properties>
+    <java.version>21</java.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-boot.version>3.3.4</spring-boot.version>
+    <spring-cloud.version>2023.0.3</spring-cloud.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Spring Boot's "bill of materials": pins compatible versions of every Spring library. -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- Same idea for Spring Cloud (needed only by the API gateway). -->
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <module>api-gateway</module>
+    <module>loan-service</module>
+    <module>investment-service</module>
+    <module>planner-service</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!--
+          Packages each service as a runnable "fat jar" (your code + Spring + all
+          libraries in one file): java -jar target/<name>.jar
+          The "repackage" goal must be listed explicitly because this POM doesn't
+          inherit from spring-boot-starter-parent, which normally does it for you.
+        -->
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <!--
+        -parameters keeps method parameter names in the compiled classes, so Spring
+        can match @PathVariable Long id to the {id} in the URL. (spring-boot-starter-parent
+        turns this on for you; we set it ourselves because this POM doesn't inherit from it.)
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <release>${java.version}</release>
+          <parameters>true</parameters>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

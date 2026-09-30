@@ -1,0 +1,37 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      # Each route = "if the path matches the predicate, forward to uri".
+      # URLs default to localhost for running on your machine; docker-compose.yml
+      # overrides them with container names through environment variables.
+      routes:
+        - id: loan-service
+          uri: ${LOAN_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/loans/**
+
+        - id: investment-service
+          uri: ${INVESTMENT_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/investments/**
+
+        - id: planner-service
+          uri: ${PLANNER_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/plans/**
+
+# /actuator/gateway/routes lists the routes above — handy to check the config was picked up.
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

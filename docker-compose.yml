@@ -1,0 +1,49 @@
+# Runs all four services, each in its own container.
+#
+#   mvn package            # build the four jars first
+#   docker compose up --build
+#
+# Inside Docker, containers find each other by service name (e.g. http://loan-service:8081),
+# so the *_SERVICE_URL variables below replace the "localhost" defaults in application.yml.
+# Only the gateway needs to be reachable from outside, but every port is published so you
+# can also call each service directly while learning.
+
+services:
+
+  loan-service:
+    build: ./loan-service
+    container_name: finance-loan-service
+    ports:
+      - "8081:8081"
+
+  investment-service:
+    build: ./investment-service
+    container_name: finance-investment-service
+    ports:
+      - "8082:8082"
+
+  planner-service:
+    build: ./planner-service
+    container_name: finance-planner-service
+    ports:
+      - "8083:8083"
+    environment:
+      LOAN_SERVICE_URL: http://loan-service:8081
+      INVESTMENT_SERVICE_URL: http://investment-service:8082
+    depends_on:
+      - loan-service
+      - investment-service
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: finance-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      LOAN_SERVICE_URL: http://loan-service:8081
+      INVESTMENT_SERVICE_URL: http://investment-service:8082
+      PLANNER_SERVICE_URL: http://planner-service:8083
+    depends_on:
+      - loan-service
+      - investment-service
+      - planner-service

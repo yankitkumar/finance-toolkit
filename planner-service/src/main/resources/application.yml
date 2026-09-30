@@ -1,0 +1,40 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: planner-service
+
+  # This service's own database. H2 runs inside the app and lives in memory,
+  # so it's reset on every restart — perfect for learning, swap for
+  # PostgreSQL/MySQL in real life by changing only these lines.
+  datasource:
+    url: jdbc:h2:mem:planner_db
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update        # create/update the table from the @Entity class
+    open-in-view: false
+
+  # Browse the table at http://localhost:8083/h2-console (JDBC URL: jdbc:h2:mem:planner_db).
+  # Development only: the console has no login protection of its own.
+  h2:
+    console:
+      enabled: true
+
+# Where the other services live. The ${VAR:default} form means "use the
+# environment variable if set, otherwise the default" — docker-compose.yml
+# sets these to the container names.
+services:
+  loan:
+    base-url: ${LOAN_SERVICE_URL:http://localhost:8081}
+  investment:
+    base-url: ${INVESTMENT_SERVICE_URL:http://localhost:8082}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

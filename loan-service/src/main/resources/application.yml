@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: loan-service
+
+# /actuator/health lets Docker, the gateway or you check the service is up.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
