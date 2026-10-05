@@ -1,0 +1,10 @@
+server:
+  port: 9002
+
+spring:
+  application:
+    name: converter-service
+
+# Where to find rate-service. Docker Compose overrides this with RATE_SERVICE_URL.
+rate-service:
+  url: ${RATE_SERVICE_URL:http://localhost:9001}

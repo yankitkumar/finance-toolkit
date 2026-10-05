@@ -1,0 +1,10 @@
+server:
+  port: 9102
+
+spring:
+  application:
+    name: appointment-service
+
+# Where to find patient-service. Docker Compose overrides this with PATIENT_SERVICE_URL.
+patient-service:
+  url: ${PATIENT_SERVICE_URL:http://localhost:9101}

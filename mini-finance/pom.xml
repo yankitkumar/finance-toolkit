@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A deliberately tiny Spring Boot microservices project: two services, one HTTP call.
+  Build both from here with: mvn package
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.4</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.mini</groupId>
+  <artifactId>mini-finance</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Mini Finance</name>
+
+  <properties>
+    <java.version>21</java.version>
+  </properties>
+
+  <modules>
+    <module>rate-service</module>
+    <module>converter-service</module>
+  </modules>
+</project>
