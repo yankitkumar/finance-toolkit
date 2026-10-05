@@ -230,3 +230,11 @@ finance-toolkit/
 ---
 
 *For learning only. This is not financial advice.*
+
+## Even smaller starter projects
+
+Two standalone, two-service projects live alongside the main one. Each has its own
+`pom.xml`, README and `docker-compose.yml`, and is not part of the root build:
+
+- [`mini-finance/`](mini-finance/): `converter-service` calls `rate-service` to convert currencies.
+- [`mini-healthcare/`](mini-healthcare/): `appointment-service` calls `patient-service` to book appointments.

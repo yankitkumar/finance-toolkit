@@ -1,0 +1,17 @@
+# Build the jars first:  mvn package
+# Then:                  docker compose up --build
+services:
+  rate-service:
+    build: ./rate-service
+    ports:
+      - "9001:9001"
+
+  converter-service:
+    build: ./converter-service
+    ports:
+      - "9002:9002"
+    environment:
+      # Inside Docker, containers reach each other by service name.
+      RATE_SERVICE_URL: http://rate-service:9001
+    depends_on:
+      - rate-service

@@ -1,0 +1,17 @@
+# Build the jars first:  mvn package
+# Then:                  docker compose up --build
+services:
+  patient-service:
+    build: ./patient-service
+    ports:
+      - "9101:9101"
+
+  appointment-service:
+    build: ./appointment-service
+    ports:
+      - "9102:9102"
+    environment:
+      # Inside Docker, containers reach each other by service name.
+      PATIENT_SERVICE_URL: http://patient-service:9101
+    depends_on:
+      - patient-service
